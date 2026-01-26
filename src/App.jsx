@@ -9,8 +9,8 @@ import ForgotPassword from './pages/forgot-password.jsx';
 import DashboardLayout from "./layout/dashboard.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Settings from "./pages/settings.jsx";
-
-
+import Search from './pages/search.jsx';
+import Moviedisplay from './components/Moviedisplay.jsx';
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -75,6 +75,8 @@ function AppContent() {
           <Route path='' element={<Dashboard />} />
           <Route path='settings' element={<Settings />} />
         </Route>
+        <Route path='/search' element={<Search />} />
+        {/* <Route path='/movie/:id' element={<Moviedisplay />} /> */}
       </Routes>
     </main>
   );

@@ -13,22 +13,22 @@ const Dashboardhero = () => {
     runtime: "2h 10m",
     genres: ["Action", "Drama"],
     description:
-      "An epic tale of streaming triumph — a thrilling journey through creativity and community.",
+      "An epic tale of streaming triumph a thrilling journey through creativity and community.",
   };
 
   return (
     <section
-      className="relative w-full h-screen bg-center bg-cover"
+      className="relative w-full min-h-screen bg-center bg-cover"
       style={{ backgroundImage: `url(${dashboardbackground})` }}
     >
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90"></div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col justify-center lg:flex-row lg:items-end lg:pb-24 gap-10">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 h-full flex flex-col justify-center lg:flex-row lg:items-center lg:gap-10 gap-10">
         {/* Text Section */}
         <div className="w-full lg:w-2/3 text-center lg:text-left">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg">
+          <h1 className=" mt-4  text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-lg">
             {featured.title}
           </h1>
 
@@ -40,6 +40,7 @@ const Dashboardhero = () => {
             <span>{featured.runtime}</span>
           </div>
 
+          {/* Single description paragraph */}
           <p className="mt-6 text-gray-200 max-w-xl lg:max-w-2xl text-sm sm:text-base lg:text-lg drop-shadow-md">
             {featured.description}
           </p>
