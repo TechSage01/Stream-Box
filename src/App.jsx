@@ -64,7 +64,7 @@ function AppContent() {
 
   return (
     <main>
-      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/forgot-password' && location.pathname !== '/dashboard' && <Header />}
+      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/forgot-password' && location.pathname !== '/dashboard' && location.pathname !== '/search' && <Header />}
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<Login />} />
