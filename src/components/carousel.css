@@ -1044,11 +1044,49 @@
   transform: translateY(-50%) scale(1.1);
 }
 
+.teen-romance-nav-btn {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.teen-romance-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.teen-romance-nav-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+  transform: translateY(-50%) scale(1.1);
+}
+
 .popular-nav-prev {
   left: 5px;
 }
 
 .popular-nav-next {
+  right: 5px;
+}
+
+.teen-romance-nav-prev {
+  left: 5px;
+}
+
+.teen-romance-nav-next {
   right: 5px;
 }
 
@@ -1058,6 +1096,10 @@
   }
   
   .popular-nav-btn {
+    display: none;
+  }
+  
+  .teen-romance-nav-btn {
     display: none;
   }
   
