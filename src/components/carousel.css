@@ -4,6 +4,97 @@
   position: relative;
 }
 
+/* ======================== CUSTOM NAVIGATION BUTTONS ======================== */
+.carousel-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-nav-btn svg {
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+}
+
+.carousel-nav-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav-prev {
+  left: -8px;
+  top: 250px;
+}
+
+.carousel-nav-next {
+  right: 10px;
+  top: 250px;
+}
+
+.carousel-nav-down {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  display: block;
+  margin: 20px auto 0;
+  width: 50px;
+  height: 50px;
+  opacity: 0.7;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.carousel-nav-down:hover {
+  transform: translateX(-50%) translateY(-3px) scale(1.1);
+  opacity: 1;
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+  background-color: #e50914 !important;
+  border-color: #e50914 !important;
+}
+
+.carousel-nav-down svg {
+  animation: bounceDown 2s infinite;
+}
+
+.carousel-nav-down:hover svg {
+  animation: none;
+}
+
+@keyframes bounceDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .carousel-nav-btn {
+    display: none;
+  }
+  
+  .thumbnail-nav-btn {
+    display: none;
+  }
+}
+
 /* ======================== MAIN CAROUSEL ======================== */
 .main-carousel {
   width: 100%;
@@ -182,9 +273,11 @@
 }
 
 .btn-watchlist {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   color: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  flex: 1;
+  min-width: 140px;
   backdrop-filter: blur(10px);
   width: 50px;
   height: 50px;
@@ -197,6 +290,7 @@
 .btn-watchlist:hover {
   background-color: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
 .btn-watchlist svg {
@@ -278,6 +372,46 @@
   background-color: black;
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+/* Thumbnail Navigation Buttons */
+.thumbnail-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.thumbnail-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.thumbnail-nav-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.thumbnail-nav-prev {
+  left: 5px;
+}
+
+.thumbnail-nav-next {
+  right: 5px;
 }
 
 .thumbnails-carousel {
@@ -565,5 +699,208 @@
 
   :global(.swiper-pagination-bullet-active) {
     width: 20px !important;
+  }
+}
+
+/* ======================== NOLLYWOOD CAROUSEL ======================== */
+.nollywood-container {
+  padding: 20px 40px;
+  background-color: #141414;
+  position: relative;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.see-more-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #e50914;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.see-more-link:hover {
+  color: #ff3030;
+  gap: 8px;
+}
+
+.see-more-link svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.see-more-link:hover svg {
+  transform: translateX(3px);
+}
+
+.nollywood-carousel {
+  width: 100%;
+}
+
+.nollywood-slide {
+  width: auto;
+}
+
+.nollywood-card {
+  position: relative;
+  width: 160px;
+  height: 240px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nollywood-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.nollywood-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(229, 9, 20, 0.4);
+}
+
+.nollywood-card:hover img {
+  transform: scale(1.1);
+}
+
+.nollywood-card-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nollywood-card:hover .nollywood-card-overlay {
+  opacity: 1;
+}
+
+.nollywood-card-overlay svg {
+  width: 50px;
+  height: 50px;
+  color: #ffffff;
+}
+
+.nollywood-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+.nollywood-card-title {
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nollywood-card-year {
+  color: #999999;
+  font-size: 0.75rem;
+}
+
+.nollywood-nav-btn {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.nollywood-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.nollywood-nav-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nollywood-nav-prev {
+  left: 5px;
+}
+
+.nollywood-nav-next {
+  right: 5px;
+}
+
+@media (max-width: 768px) {
+  .nollywood-container {
+    padding: 15px 20px;
+  }
+  
+  .nollywood-nav-btn {
+    display: none;
+  }
+  
+  .nollywood-card {
+    width: 120px;
+    height: 180px;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nollywood-container {
+    padding: 10px 15px;
+  }
+  
+  .nollywood-card {
+    width: 100px;
+    height: 150px;
+  }
+  
+  .nollywood-card-title {
+    font-size: 0.7rem;
+  }
+  
+  .nollywood-card-year {
+    font-size: 0.65rem;
   }
 }
