@@ -18,10 +18,18 @@ const Search = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=a687c20174983fe7d8ade1c3256b84b4&query=${movieName}`
+          `https://api.themoviedb.org/3/search/multi?api_key=a687c20174983fe7d8ade1c3256b84b4&query=${movieName}&include_adult=false`
         );
+
         const data = await res.json();
-        setMovies(data.results || []);
+
+        // Keep only movies and TV shows
+        const filteredResults = (data.results || []).filter(
+          (item) =>
+            item.media_type === "movie" || item.media_type === "tv"
+        );
+
+        setMovies(filteredResults);
       } catch (error) {
         console.error(error);
       } finally {
@@ -51,11 +59,11 @@ const Search = () => {
           </h2>
 
           {loading && (
-            <p className="text-gray-300">Loading movies...</p>
+            <p className="text-gray-300">Loading results...</p>
           )}
 
           {!loading && movies.length === 0 && (
-            <p className="text-gray-300">No movies found.</p>
+            <p className="text-gray-300">No results found.</p>
           )}
 
           <div

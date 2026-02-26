@@ -4,6 +4,7 @@ import Dashboardheader from '../components/dashboard-header'
 import { useEffect } from 'react'
 import Dashboardhero from '../components/dashboard-hero'
 import TrailerModal from '../components/trailer-modal'
+import Footer from '../components/footer'
 const dashboard = () => {
     const navigate = useNavigate()
 
@@ -20,7 +21,7 @@ const dashboard = () => {
         <Dashboardhero />
         <TrailerModal />
         <Outlet />
-
+        <Footer />
         
     </div>
   )

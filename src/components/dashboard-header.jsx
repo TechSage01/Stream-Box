@@ -413,7 +413,7 @@
                           setMenuOpen(false);
                         }}
                         className={`
-                    flex items-center gap-3 px-4 py-3 rounded-md text-sm transition
+                    flex items-center gap-3 px-4 py-3 rounded-md text-sm transition 
                     ${
                       active
                         ? "bg-red-700 text-white"
@@ -431,7 +431,7 @@
                   <button
                     onClick={() => setShowLogoutModal(true)}
                     disabled={logoutLoading}
-                    className="mt-4 flex items-center gap-3 px-4 py-3 rounded-md text-red-500 hover:bg-white/5 transition"
+                    className="mt-4 flex items-center gap-3 px-4 py-3 rounded-md text-red-500 hover:bg-white/5 transition cursor-pointer"
                   >
                     <FiLogOut size={18} />
                     {logoutLoading ? "Logging out..." : "Logout"}
