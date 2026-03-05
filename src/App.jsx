@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Header from './components/header.jsx';
 import Hero from './components/hero.jsx';
 import Login from './pages/login.jsx';
 import Signup from './pages/signup.jsx';
@@ -14,6 +13,11 @@ import Moviedisplay from './components/Moviedisplay.jsx';
 import PrivacyPolicy from './pages/privacy-policy.jsx';
 import ContactUs from './pages/contact-us.jsx';
 import UserAgreement from './pages/user-agreement.jsx';
+import Trending from './pages/trending.jsx';
+import MoviesPage from './pages/movies.jsx';
+import MoviePage from './pages/movie.jsx';
+import Watchlist from './pages/watchlist.jsx';
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +71,6 @@ function AppContent() {
 
   return (
     <main>
-      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/forgot-password' && location.pathname !== '/dashboard' && location.pathname !== '/search' && location.pathname !== '/privacy-policy' && location.pathname !== '/contact-us' && location.pathname !== '/user-agreement' && <Header />}
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<Login />} />
@@ -79,10 +82,13 @@ function AppContent() {
           <Route path='settings' element={<Settings />} />
         </Route>
         <Route path='/search' element={<Search />} />
+        <Route path='/trending' element={<Trending />} />
+<Route path='/movies' element={<MoviesPage />} />
+        <Route path='/movie/:id' element={<MoviePage />} />
+        <Route path='/watchlist' element={<Watchlist />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/contact-us' element={<ContactUs />} />
         <Route path='/user-agreement' element={<UserAgreement />} />
-        {/* <Route path='/movie/:id' element={<Moviedisplay />} /> */}
       </Routes>
     </main>
   );

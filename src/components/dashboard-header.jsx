@@ -8,13 +8,15 @@
   import { AiOutlineClose } from "react-icons/ai";
   import { motion, AnimatePresence } from "framer-motion";
   import { useLocation } from "react-router-dom";
-  import {
+import {
     FiLogOut,
     FiSearch,
     FiHome,
     FiFilm,
     FiTv,
     FiTrendingUp,
+    FiMic,
+    FiBookmark,
   } from "react-icons/fi";
 
   const Dashboardheader = () => {
@@ -32,9 +34,12 @@
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef(null);
 
-    const navigate = useNavigate();
-    const profileRef = useRef(null);
-    const fileInputRef = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  const navigate = useNavigate();
+  const profileRef = useRef(null);
+  const fileInputRef = useRef(null);
 
     /* AUTH USER */
     useEffect(() => {
@@ -79,6 +84,34 @@
       return () => window.removeEventListener("resize", check);
     }, []);
 
+    // initialize speech recognition if available
+    useEffect(() => {
+      if (typeof window === "undefined") return;
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return;
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setMoviename(transcript);
+        // directly navigate once we have a result
+        navigate(`/search?name=${encodeURIComponent(transcript)}`);
+        setShowSuggestions(false);
+        setMenuOpen(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+    }, [navigate]);
+
     /* FETCH SUGGESTIONS WHEN USER TYPES */
     useEffect(() => {
       if (!movieName.trim() || movieName.length < 1) {
@@ -114,6 +147,15 @@
       setShowSuggestions(false);
     };
 
+    const handleVoiceSearch = () => {
+      if (!recognitionRef.current) {
+        alert("Voice search not supported in this browser.");
+        return;
+      }
+      setIsListening(true);
+      recognitionRef.current.start();
+    };
+
     const handleSuggestionClick = (movie) => {
       setMoviename(movie.title);
       navigate(`/search?name=${movie.title}`);
@@ -141,11 +183,12 @@
 
     const location = useLocation();
 
-    const menuItems = [
+const menuItems = [
       { name: "Home", path: "/dashboard", icon: FiHome },
       { name: "Movies", path: "/movies", icon: FiFilm },
       { name: "TV Shows", path: "/tv", icon: FiTv },
       { name: "Most Watched", path: "/trending", icon: FiTrendingUp },
+      { name: "Watchlist", path: "/watchlist", icon: FiBookmark },
     ];
 
     return (
@@ -195,7 +238,7 @@
 
               {/* SECOND ROW: Search input (centered) */}
               <div className="flex justify-center pb-4 px-4">
-                <div ref={suggestionsRef} className="w-full max-w-[400px] relative">
+                <div ref={suggestionsRef} className="w-full max-w-[400px] relative flex items-center">
                   <div className="flex w-full min-w-0 bg-[#121212] rounded-md overflow-hidden border border-[#b00020]/50 focus-within:border-[#b00020] focus-within:shadow-[0_0_10px_rgba(176,0,32,0.55)] transition">
                     <input
                       type="text"
@@ -224,6 +267,15 @@
                       <FiSearch className="text-white" size={18} />
                     </button>
                   </div>
+                  <button
+                    onClick={handleVoiceSearch}
+                    className="ml-2 text-white hover:text-red-600 cursor-pointer transition"
+                  >
+                    <FiMic
+                      className={`${isListening ? 'animate-pulse text-red-500' : ''}`}
+                      size={18}
+                    />
+                  </button>
 
                   {/* SUGGESTIONS DROPDOWN */}
                   {showSuggestions && suggestions.length > 0 && (
@@ -280,7 +332,7 @@
 
               {/* CENTER: Search input */}
               <div className="flex-1 flex justify-center">
-                <div ref={suggestionsRef} className="w-full max-w-[400px] relative">
+                <div ref={suggestionsRef} className="w-full max-w-[400px] relative flex items-center">
                   <div className="flex w-full bg-[#1a1a1a] rounded-md overflow-hidden">
                     <input
                       type="text"
@@ -305,6 +357,15 @@
                       <FiSearch className="text-white" size={18} />
                     </button>
                   </div>
+                  <button
+                    onClick={handleVoiceSearch}
+                    className="ml-4 text-white hover:text-red-600 cursor-pointer transition"
+                  >
+                    <FiMic
+                      className={`${isListening ? 'animate-pulse text-red-500' : ''}`}
+                      size={18}
+                    />
+                  </button>
 
                   {/* SUGGESTIONS DROPDOWN */}
                   {showSuggestions && suggestions.length > 0 && (
@@ -412,8 +473,8 @@
                           navigate(path);
                           setMenuOpen(false);
                         }}
-                        className={`
-                    flex items-center gap-3 px-4 py-3 rounded-md text-sm transition 
+className={`
+                    flex items-center gap-3 px-4 py-3 rounded-md text-sm transition cursor-pointer
                     ${
                       active
                         ? "bg-red-700 text-white"
