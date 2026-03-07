@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
@@ -58,7 +59,7 @@ const MovieCarousel = ({ movies = [] }) => {
     console.error("Failed to update watchlist", err);
     setWatchlistLoading(false);
   }
-};
+  };
 
   const goToNext = () => {
     swiperInstance.current?.slideNext();
@@ -1132,8 +1133,7 @@ const moviesToShow = movies.length > 0 ? movies : defaultMovies;
   };
 
   const handleNollywoodClick = (movie) => {
-    setActiveMovie(movie);
-    setShowTrailer(true);
+    navigate(`/movie/${movie.id}`);
   };
 
   const handlePopularClick = (movie) => {

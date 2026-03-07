@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Dashboardheader from "../components/dashboard-header.jsx";
 import Moviedisplay from "../components/Moviedisplay.jsx";
-import { FaPlay, FaInfoCircle, FaPlus, FaStar, FaClock, FaCalendarAlt, FaArrowLeft } from "react-icons/fa";
+import { FaPlay, FaInfoCircle, FaPlus, FaStar, FaClock, FaCalendarAlt,  FaArrowLeft, FaRegBookmark, FaSpinner} from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 
 const MoviePage = () => {
@@ -77,17 +77,42 @@ const MoviePage = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleWatchClick = () => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("watchedMovies")) || [];
-      if (!stored.find((m) => m.id === movie.id)) {
-        stored.push(movie);
-        localStorage.setItem("watchedMovies", JSON.stringify(stored));
-      }
-    } catch (err) {
-      console.error("Failed to save watched movie", err);
+  const [watchlistLoading, setWatchlistLoading] = useState(false);
+
+const handleWatchlistClick = (movie) => {
+  setWatchlistLoading(true);
+
+  try {
+    const stored = JSON.parse(localStorage.getItem("watchlist")) || [];
+    const alreadyAdded = stored.find((m) => m.id === movie.id);
+
+    let updated;
+
+    if (alreadyAdded) {
+      // remove from watchlist
+      updated = stored.filter((m) => m.id !== movie.id);
+      localStorage.setItem("watchlist", JSON.stringify(updated));
+    } else {
+      // add to watchlist
+      updated = [...stored, movie];
+      localStorage.setItem("watchlist", JSON.stringify(updated));
     }
-  };
+
+    setTimeout(() => {
+      setWatchlistLoading(false);
+
+      if (!alreadyAdded) {
+        alert(`${movie.title} has been added successfully`);
+      } else {
+        alert(`${movie.title} has been removed from your watchlist`);
+      }
+    }, 300);
+
+  } catch (err) {
+    console.error("Failed to update watchlist", err);
+    setWatchlistLoading(false);
+  }
+};
 
   if (loading) {
     return (
@@ -206,7 +231,7 @@ const MoviePage = () => {
             {/* ACTION BUTTONS */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <button
-                onClick={handleWatchClick}
+                onClick={handleWatchlistClick}
                 className="btn-play flex items-center gap-3 px-8 py-3"
               >
                 <FaPlay size={18} />
@@ -223,8 +248,16 @@ const MoviePage = () => {
                 </button>
               )}
 
-              <button className="btn-watchlist flex items-center justify-center w-12 h-12">
-                <FaPlus size={18} />
+              <button className="btn-watchlist flex items-center justify-center w-12 h-12"
+                onClick={() => handleWatchlistClick(movie)}
+                disabled={watchlistLoading}
+              >
+              {watchlistLoading ? (
+                <FaSpinner className="spinner-icon" />
+              ) : (
+                <FaRegBookmark/>
+              )}
+                {/* <FaPlus size={18} /> */}
               </button>
             </div>
           </div>
@@ -428,3 +461,5 @@ const MoviePage = () => {
 };
 
 export default MoviePage;
+
+

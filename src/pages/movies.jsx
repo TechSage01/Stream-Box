@@ -11,20 +11,23 @@ const MoviesPage = () => {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?api_key=a687c20174983fe7d8ade1c3256b84b4&page=${page}&sort_by=popularity.desc`
-        );
-        const data = await res.json();
-        setMovies(data.results || []);
-        setTotalPages(data.total_pages || 1);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  setLoading(true);
+  const API_KEY = import.meta.env.VITE_API_KEY;
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=${page}&sort_by=popularity.desc`
+    );
+
+    const data = await res.json();
+    setMovies(data.results || []);
+    setTotalPages(data.total_pages || 1);
+
+  } catch (error) {
+    console.error("Error fetching movies:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchMovies();
   }, [page]);
