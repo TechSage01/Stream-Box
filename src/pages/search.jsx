@@ -15,10 +15,11 @@ const Search = () => {
     if (!movieName) return;
 
     const fetchMovies = async () => {
+      const API_KEY = import.meta.env.VITE_API_KEY;
       setLoading(true);
       try {
         const res = await fetch(
-          `https://api.themoviedb.org/3/search/multi?api_key=a687c20174983fe7d8ade1c3256b84b4&query=${movieName}&include_adult=false`
+          `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${movieName}&include_adult=false`
         );
 
         const data = await res.json();

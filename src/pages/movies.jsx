@@ -13,10 +13,14 @@ const MoviesPage = () => {
     const fetchMovies = async () => {
   setLoading(true);
   const API_KEY = import.meta.env.VITE_API_KEY;
+  // console.log(import.meta.env.VITE_API_KEY);
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=${page}&sort_by=popularity.desc`
     );
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
     const data = await res.json();
     setMovies(data.results || []);

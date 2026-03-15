@@ -18,31 +18,33 @@ const MoviePage = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       setLoading(true);
+      const API_KEY = import.meta.env.VITE_API_KEY;
+
       try {
         // Fetch movie details
         const movieRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=a687c20174983fe7d8ade1c3256b84b4`
+          `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
         );
         const movieData = await movieRes.json();
         setMovie(movieData);
 
         // Fetch credits (cast & crew)
         const creditsRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/credits?api_key=a687c20174983fe7d8ade1c3256b84b4`
+          `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${API_KEY}`
         );
         const creditsData = await creditsRes.json();
         setCredits(creditsData);
 
         // Fetch similar movies
         const similarRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/similar?api_key=a687c20174983fe7d8ade1c3256b84b4`
+          `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}`
         );
         const similarData = await similarRes.json();
         setSimilarMovies(similarData.results?.slice(0, 6) || []);
 
         // Fetch trailer
         const videosRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/videos?api_key=a687c20174983fe7d8ade1c3256b84b4`
+          `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
         );
         const videosData = await videosRes.json();
         const trailer = videosData.results?.find(v => v.type === "Trailer" && v.site === "YouTube");
@@ -231,7 +233,7 @@ const handleWatchlistClick = (movie) => {
             {/* ACTION BUTTONS */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <button
-                onClick={handleWatchlistClick}
+                onClick={()=> navigate(`/play/${movie.id}`)}
                 className="btn-play flex items-center gap-3 px-8 py-3"
               >
                 <FaPlay size={18} />

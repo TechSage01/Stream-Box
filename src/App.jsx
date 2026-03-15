@@ -17,6 +17,7 @@ import Trending from './pages/trending.jsx';
 import MoviesPage from './pages/movies.jsx';
 import MoviePage from './pages/movie.jsx';
 import Watchlist from './pages/watchlist.jsx';
+import MoviePlayer from './pages/MoviePage.jsx';
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -85,6 +86,7 @@ function AppContent() {
         <Route path='/trending' element={<Trending />} />
 <Route path='/movies' element={<MoviesPage />} />
         <Route path='/movie/:id' element={<MoviePage />} />
+        <Route path='/play/:id' element={<MoviePlayer />} />
         <Route path='/watchlist' element={<Watchlist />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/contact-us' element={<ContactUs />} />

@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
+// import { useSearchParams } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -9,6 +10,7 @@ import "swiper/css/effect-fade";
 import "./carousel.css";
 import TrailerModal from "./trailer-modal";
 import { FaPlay, FaBookmark, FaRegBookmark, FaSpinner} from "react-icons/fa";
+import MoviePage from "../pages/movie";
 
 const MovieCarousel = ({ movies = [] }) => {
   const swiperRef = useRef(null);
@@ -18,8 +20,25 @@ const MovieCarousel = ({ movies = [] }) => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [watchlist, setWatchlist] = useState([]);
+  const [caroussselMovies, setMovies] = useState([]);
 
-  // Load watchlist from localStorage on mount
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const API_KEY = import.meta.env.VITE_API_KEY;
+      try {
+        const res = await fetch(
+          `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=1&sort_by=popularity.desc`
+        )
+        const data = await res.json();
+        console.log(data);
+        setMovies(data.results || []);
+      } 
+      catch (error) {}
+    };
+    fetchMovies();
+  }, []);
+  console.log(caroussselMovies)
+  // Load watchlist from localStorage on mount 
   useEffect(() => {
     const savedWatchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
     setWatchlist(savedWatchlist);
@@ -79,238 +98,238 @@ const MovieCarousel = ({ movies = [] }) => {
 
 
   // Default movies if none provided - using reliable TMDB images
-  const defaultMovies = [
-    {
-      id: 1,
-      title: "The Night Agent",
-      year: 2023,
-      rating: "TV-MA",
-      runtime: "50m",
-      genres: ["Action", "Drama", "Thriller"],
-      description:
-        "A low-level FBI agent must uncover a secret while his life spirals out of control.",
-      image:
-        "https://image.tmdb.org/t/p/original/5P8SmMzSNYikXpxil6BYzJ16611.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/5P8SmMzSNYikXpxil6BYzJ16611.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 2,
-      title: "Squid Game",
-      year: 2021,
-      rating: "TV-MA",
-      runtime: "55m",
-      genres: ["Drama", "Thriller"],
-      description:
-        "Hundreds of cash-strapped players accept a strange invitation to compete in children's games.",
-      image: "https://image.tmdb.org/t/p/w500/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 3,
-      title: "Stranger Things",
-      year: 2016,
-      rating: "TV-14",
-      runtime: "50m",
-      genres: ["Drama", "Fantasy", "Horror"],
-      description:
-        "When a young boy vanishes, a small town uncovers a mystery.",
-      image: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 4,
-      title: "The Crown",
-      year: 2016,
-      rating: "TV-MA",
-      runtime: "60m",
-      genres: ["Biography", "Drama", "History"],
-      description:
-        "Follows the political rivalries and romance of Queen Elizabeth II's reign.",
-      image:
-        "https://image.tmdb.org/t/p/original/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 5,
-      title: "The Mandalorian",
-      year: 2019,
-      rating: "TV-14",
-      runtime: "45m",
-      genres: ["Action", "Adventure", "Sci-Fi"],
-      description:
-        "The travels of a lone bounty hunter in the outer reaches of the galaxy.",
-      image: "https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/9ijMGlJKqcslswWUzTEwScm82Gs.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 6,
-      title: "Wednesday",
-      year: 2022,
-      rating: "TV-14",
-      runtime: "45m",
-      genres: ["Comedy", "Crime", "Fantasy"],
-      description: "Wednesday Addams is sent to Nevermore Academy.",
-      image: "https://image.tmdb.org/t/p/w500/9PFonBhy4qw0exqhwK4tMKaPyRz.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/iHSwvRVsRyxpX7FE7GbviaDvgGZ.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 7,
-      title: "Breaking Bad",
-      year: 2008,
-      rating: "TV-MA",
-      runtime: "47m",
-      genres: ["Crime", "Drama", "Thriller"],
-      description:
-        "A high school chemistry teacher turns to manufacturing methamphetamine.",
-      image: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 8,
-      title: "Money Heist",
-      year: 2017,
-      rating: "TV-MA",
-      runtime: "70m",
-      genres: ["Action", "Crime", "Drama"],
-      description:
-        "An unusual group of robbers attempt to carry out the most perfect robbery.",
-      image: "https://image.tmdb.org/t/p/w500/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 9,
-      title: "House of the Dragon",
-      year: 2022,
-      rating: "TV-MA",
-      runtime: "60m",
-      genres: ["Action", "Adventure", "Drama"],
-      description: "The story of the Targaryen civil war.",
-      image: "https://image.tmdb.org/t/p/w500/z2yahl2uefxDCl0nogcRBstwruJ.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/z2yahl2uefxDCl0nogcRBstwruJ.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-    {
-      id: 10,
-      title: "The Last of Us",
-      year: 2023,
-      rating: "TV-MA",
-      runtime: "60m",
-      genres: ["Action", "Adventure", "Drama"],
-      description:
-        "After a global pandemic, a survivor takes charge of a young girl.",
-      image: "https://image.tmdb.org/t/p/w500/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
-      backdrop:
-        "https://image.tmdb.org/t/p/original/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
-      videoId: "ysz5S6PUM-U",
-    },
-   {
-  id: 11,
-  title: "The Witcher",
-  year: 2019,
-  rating: "TV-MA",
-  runtime: "60m",
-  genres: ["Action", "Adventure", "Fantasy"],
-  description:
-    "Geralt of Rivia, a mutated monster-hunter, journeys toward his destiny in a turbulent world where people often prove more wicked than beasts.",
-  image:
-    "https://image.tmdb.org/t/p/w500/7vjaCdMw15FEbXyLQTVa04URsPm.jpg",
-  backdrop:
-    "https://image.tmdb.org/t/p/original/foGkPxpw9h8zln81j63mix5B7m8.jpg",
-  videoId: "ysz5S6PUM-U",
-},
-{
-  id: 12,
-  title: "Sherlock",
-  year: 2010,
-  rating: "TV-14",
-  runtime: "88m",
-  genres: ["Crime", "Drama", "Mystery"],
-  description:
-    "A modern update finds the famous detective solving crimes in 21st century London.",
-  image:
-    "https://image.tmdb.org/t/p/w500/uBTOiKmW0lzm2sW9y8dAm2FLuL.jpg",
-  backdrop:
-    "https://image.tmdb.org/t/p/original/7WTsnHkbA0FaG6R9twfFde0I9hl.jpg",
-  videoId: "ysz5S6PUM-U",
-},
-{
-  id: 13,
-  title: "Dark",
-  year: 2017,
-  rating: "TV-MA",
-  runtime: "60m",
-  genres: ["Crime", "Drama", "Mystery"],
-  description:
-    "A family saga with a supernatural twist, set in a German town where the disappearance of two young children exposes the relationships among four families.",
-  image:
-    "data:image/jpeg;base64,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",
-  backdrop:
-    "data:image/jpeg;base64,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",
-  videoId: "ysz5S6PUM-U",
-},
-{
-  id: 14,
-  title: "Friends",
-  year: 1994,
-  rating: "TV-14",
-  runtime: "22m",
-  genres: ["Comedy", "Romance"],
-  description:
-    "Follows the personal and professional lives of six twenty to thirty-something-year-old friends living in Manhattan.",
-  image:
-    "https://image.tmdb.org/t/p/original/l0qVZIpXtIo7km9u5Yqh0nKPOr5.jpg",
-  backdrop:
-    "https://image.tmdb.org/t/p/original/l0qVZIpXtIo7km9u5Yqh0nKPOr5.jpg",
-  videoId: "ysz5S6PUM-U",
-},
-{
-  id: 15,
-  title: "Peaky Blinders",
-  year: 2013,
-  rating: "TV-MA",
-  runtime: "60m",
-  genres: ["Crime", "Drama"],
-  description:
-    "A gangster family epic set in 1919 Birmingham, England and centered on a gang who sew razor blades in the peaks of their caps.",
-  image:
-    "https://image.tmdb.org/t/p/original/qw3J9cNeLioOLoR68WX7z79aCdK.jpg",
-  backdrop:
-    "https://image.tmdb.org/t/p/original/qw3J9cNeLioOLoR68WX7z79aCdK.jpg",
-  videoId: "ysz5S6PUM-U",
-},
-{
-  id: 16,
-  title: "The Walking Dead",
-  year: 2010,
-  rating: "TV-MA",
-  runtime: "44m",
-  genres: ["Drama", "Horror", "Sci-Fi"],
-  description:
-    "Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies.",
-  image:
-    "https://image.tmdb.org/t/p/original/wXXaPMgrv96NkH8KD1TMdS2d7iq.jpg",
-  backdrop:
-    "https://image.tmdb.org/t/p/original/wXXaPMgrv96NkH8KD1TMdS2d7iq.jpg",
-  videoId: "ysz5S6PUM-U",
-},
-  ];
+//   const defaultMovies = [
+//     {
+//       id: 1,
+//       title: "The Night Agent",
+//       year: 2023,
+//       rating: "TV-MA",
+//       runtime: "50m",
+//       genres: ["Action", "Drama", "Thriller"],
+//       description:
+//         "A low-level FBI agent must uncover a secret while his life spirals out of control.",
+//       image:
+//         "https://image.tmdb.org/t/p/original/5P8SmMzSNYikXpxil6BYzJ16611.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/5P8SmMzSNYikXpxil6BYzJ16611.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 2,
+//       title: "Squid Game",
+//       year: 2021,
+//       rating: "TV-MA",
+//       runtime: "55m",
+//       genres: ["Drama", "Thriller"],
+//       description:
+//         "Hundreds of cash-strapped players accept a strange invitation to compete in children's games.",
+//       image: "https://image.tmdb.org/t/p/w500/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 3,
+//       title: "Stranger Things",
+//       year: 2016,
+//       rating: "TV-14",
+//       runtime: "50m",
+//       genres: ["Drama", "Fantasy", "Horror"],
+//       description:
+//         "When a young boy vanishes, a small town uncovers a mystery.",
+//       image: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 4,
+//       title: "The Crown",
+//       year: 2016,
+//       rating: "TV-MA",
+//       runtime: "60m",
+//       genres: ["Biography", "Drama", "History"],
+//       description:
+//         "Follows the political rivalries and romance of Queen Elizabeth II's reign.",
+//       image:
+//         "https://image.tmdb.org/t/p/original/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/1XDDXPXGiI8id7MrUxK36ke7gkX.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 5,
+//       title: "The Mandalorian",
+//       year: 2019,
+//       rating: "TV-14",
+//       runtime: "45m",
+//       genres: ["Action", "Adventure", "Sci-Fi"],
+//       description:
+//         "The travels of a lone bounty hunter in the outer reaches of the galaxy.",
+//       image: "https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/9ijMGlJKqcslswWUzTEwScm82Gs.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 6,
+//       title: "Wednesday",
+//       year: 2022,
+//       rating: "TV-14",
+//       runtime: "45m",
+//       genres: ["Comedy", "Crime", "Fantasy"],
+//       description: "Wednesday Addams is sent to Nevermore Academy.",
+//       image: "https://image.tmdb.org/t/p/w500/9PFonBhy4qw0exqhwK4tMKaPyRz.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/iHSwvRVsRyxpX7FE7GbviaDvgGZ.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 7,
+//       title: "Breaking Bad",
+//       year: 2008,
+//       rating: "TV-MA",
+//       runtime: "47m",
+//       genres: ["Crime", "Drama", "Thriller"],
+//       description:
+//         "A high school chemistry teacher turns to manufacturing methamphetamine.",
+//       image: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 8,
+//       title: "Money Heist",
+//       year: 2017,
+//       rating: "TV-MA",
+//       runtime: "70m",
+//       genres: ["Action", "Crime", "Drama"],
+//       description:
+//         "An unusual group of robbers attempt to carry out the most perfect robbery.",
+//       image: "https://image.tmdb.org/t/p/w500/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 9,
+//       title: "House of the Dragon",
+//       year: 2022,
+//       rating: "TV-MA",
+//       runtime: "60m",
+//       genres: ["Action", "Adventure", "Drama"],
+//       description: "The story of the Targaryen civil war.",
+//       image: "https://image.tmdb.org/t/p/w500/z2yahl2uefxDCl0nogcRBstwruJ.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/z2yahl2uefxDCl0nogcRBstwruJ.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//     {
+//       id: 10,
+//       title: "The Last of Us",
+//       year: 2023,
+//       rating: "TV-MA",
+//       runtime: "60m",
+//       genres: ["Action", "Adventure", "Drama"],
+//       description:
+//         "After a global pandemic, a survivor takes charge of a young girl.",
+//       image: "https://image.tmdb.org/t/p/w500/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
+//       backdrop:
+//         "https://image.tmdb.org/t/p/original/uKvVjHNqB5VmOrdxqAt2F7J78ED.jpg",
+//       videoId: "ysz5S6PUM-U",
+//     },
+//    {
+//   id: 11,
+//   title: "The Witcher",
+//   year: 2019,
+//   rating: "TV-MA",
+//   runtime: "60m",
+//   genres: ["Action", "Adventure", "Fantasy"],
+//   description:
+//     "Geralt of Rivia, a mutated monster-hunter, journeys toward his destiny in a turbulent world where people often prove more wicked than beasts.",
+//   image:
+//     "https://image.tmdb.org/t/p/w500/7vjaCdMw15FEbXyLQTVa04URsPm.jpg",
+//   backdrop:
+//     "https://image.tmdb.org/t/p/original/foGkPxpw9h8zln81j63mix5B7m8.jpg",
+//   videoId: "ysz5S6PUM-U",
+// },
+// {
+//   id: 12,
+//   title: "Sherlock",
+//   year: 2010,
+//   rating: "TV-14",
+//   runtime: "88m",
+//   genres: ["Crime", "Drama", "Mystery"],
+//   description:
+//     "A modern update finds the famous detective solving crimes in 21st century London.",
+//   image:
+//     "https://image.tmdb.org/t/p/w500/uBTOiKmW0lzm2sW9y8dAm2FLuL.jpg",
+//   backdrop:
+//     "https://image.tmdb.org/t/p/original/7WTsnHkbA0FaG6R9twfFde0I9hl.jpg",
+//   videoId: "ysz5S6PUM-U",
+// },
+// {
+//   id: 13,
+//   title: "Dark",
+//   year: 2017,
+//   rating: "TV-MA",
+//   runtime: "60m",
+//   genres: ["Crime", "Drama", "Mystery"],
+//   description:
+//     "A family saga with a supernatural twist, set in a German town where the disappearance of two young children exposes the relationships among four families.",
+//   image:
+//     "data:image/jpeg;base64,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",
+//   backdrop:
+//     "data:image/jpeg;base64,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",
+//   videoId: "ysz5S6PUM-U",
+// },
+// {
+//   id: 14,
+//   title: "Friends",
+//   year: 1994,
+//   rating: "TV-14",
+//   runtime: "22m",
+//   genres: ["Comedy", "Romance"],
+//   description:
+//     "Follows the personal and professional lives of six twenty to thirty-something-year-old friends living in Manhattan.",
+//   image:
+//     "https://image.tmdb.org/t/p/original/l0qVZIpXtIo7km9u5Yqh0nKPOr5.jpg",
+//   backdrop:
+//     "https://image.tmdb.org/t/p/original/l0qVZIpXtIo7km9u5Yqh0nKPOr5.jpg",
+//   videoId: "ysz5S6PUM-U",
+// },
+// {
+//   id: 15,
+//   title: "Peaky Blinders",
+//   year: 2013,
+//   rating: "TV-MA",
+//   runtime: "60m",
+//   genres: ["Crime", "Drama"],
+//   description:
+//     "A gangster family epic set in 1919 Birmingham, England and centered on a gang who sew razor blades in the peaks of their caps.",
+//   image:
+//     "https://image.tmdb.org/t/p/original/qw3J9cNeLioOLoR68WX7z79aCdK.jpg",
+//   backdrop:
+//     "https://image.tmdb.org/t/p/original/qw3J9cNeLioOLoR68WX7z79aCdK.jpg",
+//   videoId: "ysz5S6PUM-U",
+// },
+// {
+//   id: 16,
+//   title: "The Walking Dead",
+//   year: 2010,
+//   rating: "TV-MA",
+//   runtime: "44m",
+//   genres: ["Drama", "Horror", "Sci-Fi"],
+//   description:
+//     "Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies.",
+//   image:
+//     "https://image.tmdb.org/t/p/original/wXXaPMgrv96NkH8KD1TMdS2d7iq.jpg",
+//   backdrop:
+//     "https://image.tmdb.org/t/p/original/wXXaPMgrv96NkH8KD1TMdS2d7iq.jpg",
+//   videoId: "ysz5S6PUM-U",
+// },
+//   ];
 
   // Nollywood movies for the new carousel
   const nollywoodMovies = [
@@ -1118,7 +1137,7 @@ const animeMovies = [
   }
 ];
 
-const moviesToShow = movies.length > 0 ? movies : defaultMovies;
+const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
 
   const handleSlideChange = (swiper) => {
     setActiveMovie(moviesToShow[swiper.activeIndex]);
@@ -1188,41 +1207,41 @@ const moviesToShow = movies.length > 0 ? movies : defaultMovies;
         onSlideChange={handleSlideChange}
         className="main-carousel"
       >
-        {moviesToShow.map((movie) => (
-          <SwiperSlide key={movie.id}>
+        {moviesToShow.map((caroussselMovies) => (
+          <SwiperSlide key={caroussselMovies.id}>
             <div
               className="carousel-slide"
-              style={{ backgroundImage: `url(${movie.backdrop})` }}
+              style={{ backgroundImage: `url(${caroussselMovies.backdrop})` }}
             >
               <div className="carousel-overlay"></div>
 
               {/* Slide Content */}
               <div className="slide-content">
                 <div className="content-text">
-                  <h1 className="movie-title">{movie.title}</h1>
+                  <h1 className="movie-title">{caroussselMovies.title}</h1>
 
                   <div className="movie-meta">
-                    <span className="meta-item">{movie.year}</span>
+                    <span className="meta-item">{caroussselMovies.year}</span>
                     <span className="separator">•</span>
-                    <span className="meta-item">{movie.rating}</span>
+                    <span className="meta-item">{caroussselMovies.rating}</span>
                     <span className="separator">•</span>
-                    <span className="meta-item">{movie.runtime}</span>
+                    <span className="meta-item">{caroussselMovies.runtime}</span>
                   </div>
 
-                  <p className="movie-description">{movie.description}</p>
+                  <p className="movie-description">{caroussselMovies.description}</p>
 
                   <div className="genres">
-                    {movie.genres.map((genre, idx) => (
+                    {caroussselMovies.map((genre, idx) => (
                       <span key={idx} className="genre-tag">
                         {genre}
-                      </span>
+                      </span> 
                     ))}
                   </div>
-
+                  
                   <div className="action-buttons">
                     <button
                       className="btn-play"
-                      onClick={() => setShowTrailer(true)}
+                      onClick={() => navigate(`/movie/${caroussselMovies.id}`)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1249,7 +1268,7 @@ const moviesToShow = movies.length > 0 ? movies : defaultMovies;
                     </button>
 
                     <button className="btn-watchlist"
-                    onClick={() => handleWatchlistClick(movie)}
+                    onClick={() => handleWatchlistClick(caroussselMovies)}
                     disabled={watchlistLoading}
                     >
                     {watchlistLoading ? (
@@ -1273,7 +1292,7 @@ const moviesToShow = movies.length > 0 ? movies : defaultMovies;
                 </div>
 
                 <div className="content-image">
-                  <img src={movie.image} alt={movie.title} />
+                  <img src={caroussselMovies.image} alt={caroussselMovies.title} />
                 </div>
               </div>
             </div>
