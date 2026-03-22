@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
@@ -9,35 +9,61 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import "./carousel.css";
 import TrailerModal from "./trailer-modal";
-import { FaPlay, FaBookmark, FaRegBookmark, FaSpinner} from "react-icons/fa";
+import { FaPlay, FaBookmark, FaRegBookmark, FaSpinner, FaCalendarAlt, FaStar, FaClock} from "react-icons/fa";
 import MoviePage from "../pages/movie";
 
 const MovieCarousel = ({ movies = [] }) => {
   const swiperRef = useRef(null);
   const swiperInstance = useRef(null);
   const thumbnailSwiperRef = useRef(null);
+  const navigate = useNavigate();
   const [activeMovie, setActiveMovie] = useState(movies[0] || {}); 
   const [showTrailer, setShowTrailer] = useState(false);
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [watchlist, setWatchlist] = useState([]);
-  const [caroussselMovies, setMovies] = useState([]);
+  const [caroussselMovies, setCarousselMovies] = useState([]);
+  const [genresMap, setGenresMap] = useState({});
 
   useEffect(() => {
     const fetchMovies = async () => {
       const API_KEY = import.meta.env.VITE_API_KEY;
+
       try {
-        const res = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=1&sort_by=popularity.desc`
-        )
-        const data = await res.json();
-        console.log(data);
-        setMovies(data.results || []);
-      } 
-      catch (error) {}
+        const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&page=1&sort_by=popularity.desc`);
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json()
+        setCarousselMovies(data.results);
+
+      } catch (error) {
+        console.log(error)
+      }
     };
+
     fetchMovies();
   }, []);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      const API_KEY = import.meta.env.VITE_API_KEY;
+      try {
+        const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        setGenresMap(data.genres.reduce((acc, g) => { acc[g.id] = g.name; return acc; }, {}));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchGenres();
+  }, []);
+
   console.log(caroussselMovies)
+  // log
+
   // Load watchlist from localStorage on mount 
   useEffect(() => {
     const savedWatchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
@@ -79,6 +105,21 @@ const MovieCarousel = ({ movies = [] }) => {
     setWatchlistLoading(false);
   }
   };
+
+  // Date
+
+  const getYear = (date) => {
+    if (!date) return "";
+    return new Date(date).getFullYear();
+  };
+
+  const formatRuntime = (minutes) => {
+    if (!minutes) return "N/A";
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+  };
+
 
   const goToNext = () => {
     swiperInstance.current?.slideNext();
@@ -1137,10 +1178,14 @@ const animeMovies = [
   }
 ];
 
-const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
-
   const handleSlideChange = (swiper) => {
     setActiveMovie(moviesToShow[swiper.activeIndex]);
+  };
+
+  const handleSlideClick = () => {
+    if (activeMovie.id) {
+      navigate(`/movie/${activeMovie.id}`);
+    }
   };
 
   const handleThumbnailClick = (index) => {
@@ -1207,41 +1252,75 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
         onSlideChange={handleSlideChange}
         className="main-carousel"
       >
-        {moviesToShow.map((caroussselMovies) => (
-          <SwiperSlide key={caroussselMovies.id}>
+        {caroussselMovies.map((movie) => (
+          <SwiperSlide key={movie.id}>
             <div
               className="carousel-slide"
-              style={{ backgroundImage: `url(${caroussselMovies.backdrop})` }}
+              // onClick={()=> navigate(`/movie/${movie.id}`)}
+              style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.poster_path})` }}
             >
               <div className="carousel-overlay"></div>
+
+              {/* THIS IS HOW YOU GET THE IMAGE */}
+
+              {/*  https://image.tmdb.org/t/p/w500${movie.poster_path} */}
+              
+
 
               {/* Slide Content */}
               <div className="slide-content">
                 <div className="content-text">
-                  <h1 className="movie-title">{caroussselMovies.title}</h1>
-
+                  <h1 className="movie-title">{movie.title}</h1>
                   <div className="movie-meta">
-                    <span className="meta-item">{caroussselMovies.year}</span>
+                    <span className="meta-item flex items-center gap-2">
+                     <FaCalendarAlt size={12} />
+                     {getYear(movie.release_date)}
+                    </span>
                     <span className="separator">•</span>
-                    <span className="meta-item">{caroussselMovies.rating}</span>
+                    <span className="meta-item">TV-PG</span>
                     <span className="separator">•</span>
-                    <span className="meta-item">{caroussselMovies.runtime}</span>
+                      {/* <span className="meta-item flex items-center gap-2">
+                        <FaClock size={12} />
+                        {formatRuntime(movie.runtime)}
+                      </span> */}
+                    {movie.vote_average > 0 && (
+                      <span className="meta-item flex items-center gap-2 text-yellow-400">
+                        <FaStar size={12} />
+                        {movie.vote_average.toFixed(1)}
+                      </span>
+                    )}
                   </div>
 
-                  <p className="movie-description">{caroussselMovies.description}</p>
+                    {/* TAGLINE */}
+                {movie.tagline && (
+                  <p className="text-gray-400 text-lg italic mb-4">"{movie.tagline}"</p>
+                )}
+                  {/* <p className="movie-description">{movie.overview}</p> */}
 
                   <div className="genres">
-                    {caroussselMovies.map((genre, idx) => (
-                      <span key={idx} className="genre-tag">
-                        {genre}
-                      </span> 
+                    {movie.genre_ids?.slice(0,3).map((id) => (
+                      <span key={id} className="genre-tag">
+                        {genresMap[id] || id}
+                      </span>
                     ))}
                   </div>
+                   {/* <h1 className="movie-title">{movie.title}</h1> */}
+
+                  
+                   {/* {caroussselMovies.genres?.length > 0 && (
+                    <div className="genres justify-center md:justify-start mb-6">
+                      {caroussselMovies.genres.map((genre) => (
+                        <span key={genre.id} className="genre-tag">
+                          {genre.name}
+                        </span>
+                      ))}
+                    </div>
+                   )} */}
                   
                   <div className="action-buttons">
                     <button
                       className="btn-play"
-                      onClick={() => navigate(`/movie/${caroussselMovies.id}`)}
+                      onClick={()=> navigate(`/play/${movie.id}`)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1253,7 +1332,9 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
                       Play
                     </button>
 
-                    <button className="btn-info">
+                    <button className="btn-info"
+                    onClick={() => navigate(`/movie/${movie.id}`)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -1264,11 +1345,11 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                       </svg>
-                      More Info
+                      More   Info
                     </button>
 
                     <button className="btn-watchlist"
-                    onClick={() => handleWatchlistClick(caroussselMovies)}
+                    onClick={() => handleWatchlistClick(movie)}
                     disabled={watchlistLoading}
                     >
                     {watchlistLoading ? (
@@ -1276,25 +1357,17 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
                     ) : (
                       <FaRegBookmark />
                     )}
-                      {/* {inWatchlist ? "✓ In Watchlist" : "+ Watchlist"} */}
-                      {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                      </svg> */}
+                      
                       Watchlist
                     </button>
                   </div>
                 </div>
 
-                <div className="content-image">
-                  <img src={caroussselMovies.image} alt={caroussselMovies.title} />
-                </div>
+                {/* <div className="content-image">
+                  <img src={movie.image} alt={movie.title} />
+                </div> */}
               </div>
+
             </div>
           </SwiperSlide>
         ))}
@@ -1352,7 +1425,7 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
             nextEl: ".thumbnail-nav-next",
           }}
         >
-          {moviesToShow.map((movie, index) => (
+          {caroussselMovies.map((movie, index) => (
             <SwiperSlide key={movie.id} className="thumbnail-slide">
               <div
                 className={`thumbnail ${
@@ -1361,7 +1434,7 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
                 onClick={() => handleThumbnailClick(index)}
               >
                 <img
-                  src={movie.backdrop}
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                   alt={movie.title}
                   onError={(e) => {
                     e.target.src =
@@ -1466,6 +1539,7 @@ const moviesToShow = movies.length > 0 ? movies : caroussselMovies;
             <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
           </svg>
         </button>
+
       </div>
 
       {/* Popular Series Modal */}

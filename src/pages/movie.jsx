@@ -221,8 +221,8 @@ const handleWatchlistClick = (movie) => {
             )}
 
             {/* TAGLINE */}
-            {movie.tagline && (
-              <p className="text-gray-400 text-lg italic mb-4">"{movie.tagline}"</p>
+{movie.tagline && (
+              <p className="tagline text-xl md:text-2xl text-white/95 font-light italic bg-black/50 backdrop-blur-sm rounded-xl p-6 mb-8 mx-4 shadow-2xl animate-fade-in border border-white/20 max-w-2xl mx-auto">"{movie.tagline}"</p>
             )}
 
             {/* OVERVIEW */}

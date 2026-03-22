@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { HiOutlineMail, HiLockClosed, HiUser } from "react-icons/hi";
+import { HiOutlineMail, HiLockClosed } from "react-icons/hi";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -8,15 +9,15 @@ import "./login.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // ✅ toggle state
   const [error, setError] = useState("");
-  const [status, setStatus] = useState(""); // 🔥 added
+  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setError("");
     setStatus("");
 
@@ -40,13 +41,7 @@ const Login = () => {
 
     try {
       setLoading(true);
-
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       if (!user.emailVerified) {
@@ -55,7 +50,6 @@ const Login = () => {
         return;
       }
 
-      // ✅ SUCCESS
       setError("Login Successful! Redirecting...");
       setStatus("success");
 
@@ -64,7 +58,6 @@ const Login = () => {
       }, 1500);
     } catch (error) {
       setStatus("error");
-
       switch (error.code) {
         case "auth/user-not-found":
           setError("No account found with this email");
@@ -98,10 +91,9 @@ const Login = () => {
     >
       <form
         onSubmit={handleLogin}
-        className="flex flex-col gap-4 w-[400px] bg-[#232121] p-10 rounded-lg w-[]"
+        className="flex flex-col gap-4 w-[400px] bg-[#232121] p-10 rounded-lg"
       >
         <h2 className="text-[#E50914] text-center text-2xl font-bold">
-            {/* <HiUser className="text-[#E50914]" /> */}
           StreamBox Login
         </h2>
 
@@ -129,6 +121,7 @@ const Login = () => {
           </div>
         )}
 
+        {/* EMAIL */}
         <div className="relative">
           <HiOutlineMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -140,26 +133,34 @@ const Login = () => {
           />
         </div>
 
+        {/* PASSWORD WITH SHOW/HIDE TOGGLE */}
         <div className="relative">
           <HiLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"} // toggle input type
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-[320px] p-3 pl-10 rounded-sm border border-red-900 bg-transparent text-white outline-none focus:border-[#E50914]"
+            className="w-[320px] p-3 pl-10 pr-10 rounded-sm border border-red-900 bg-transparent text-white outline-none focus:border-[#E50914]"
           />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"
+          >
+            {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />}
+          </span>
         </div>
 
+        {/* LOGIN BUTTON */}
         <button
           type="submit"
           disabled={loading}
           className={`p-3 text-white font-bold rounded-md flex justify-center items-center gap-2
-    ${
-      loading
-        ? "bg-gray-500 cursor-not-allowed"
-        : "bg-[#E50914] hover:bg-red-700"
-    }`}
+            ${
+              loading
+                ? "bg-gray-500 cursor-not-allowed"
+                : "bg-[#E50914] hover:bg-red-700"
+            }`}
         >
           {loading && (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

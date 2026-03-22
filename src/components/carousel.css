@@ -2,6 +2,7 @@
 .carousel-container {
   width: 100%;
   position: relative;
+  cursor: pointer;
 }
 
 /* ======================== CUSTOM NAVIGATION BUTTONS ======================== */
@@ -138,20 +139,23 @@
 
 .content-text {
   flex: 1;
-  max-width: 600px;
+  /* margin-top: 200px; */
+    /* border: 2px solid green; */
+    /* max-width: 800px; */
   animation: slideInLeft 0.8s ease-out;
 }
 
 .content-image {
   flex: 0 0 300px;
   display: none;
+  /* border: 2px solid green; */
   animation: slideInRight 0.8s ease-out;
 }
 
 /* ======================== MOVIE TITLE ======================== */
 .movie-title {
-  font-size: 3.5rem;
-  font-weight: 800;
+  font-size: 2.8rem;
+  font-weight: 700;
   color: #ffffff;
   line-height: 1.1;
   margin-bottom: 15px;
@@ -197,18 +201,19 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 25px;
+  /* background-color: #e50914; */
 }
 
 .genre-tag {
   display: inline-block;
   padding: 6px 14px;
-  background-color: rgba(229, 9, 20, 0.8);
+  /* background-color: rgba(229, 9, 20, 0.8); */
   color: #ffffff;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(229, 9, 20, 0.5);
+  /* border: 1px solid rgba(229, 9, 20, 0.5); */
 }
 
 /* ======================== ACTION BUTTONS ======================== */
@@ -223,7 +228,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 16px 20px;
+  text-align: center;
   border: none;
   border-radius: 6px;
   font-weight: 600;
@@ -232,14 +238,16 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
 }
 
 .btn-play {
   background-color: #e50914;
   color: #ffffff;
-  flex: 1;
+  /* flex: 1; */
   min-width: 140px;
-  box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
+  /* height: 48px; */
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
 }
 
 .btn-play:hover {
@@ -257,7 +265,8 @@
   background-color: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  flex: 1;
+  /* flex: 1; */
+  /* height: 48px; */
   min-width: 140px;
   backdrop-filter: blur(10px);
 }
@@ -277,8 +286,8 @@
   background-color: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  flex: 1;
-  min-width: 140px;
+  /* flex: 1; */
+  min-width: 200px;
   backdrop-filter: blur(10px);
   width: 50px;
   height: 50px;
@@ -298,7 +307,11 @@
   width: 20px;
   height: 20px;
 }
-
+.btn-play:hover,
+.btn-info:hover,
+.btn-watchlist:hover {
+  filter: brightness(1.2);
+}
 /* Spinner animation for watchlist button */
 .spinner-icon {
   animation: spin 1s linear infinite;
@@ -403,9 +416,6 @@
   cursor: pointer;
   z-index: 50;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
 
@@ -569,7 +579,7 @@
   }
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .main-carousel {
     height: 400px;
   }
@@ -632,9 +642,9 @@
     bottom: 15px !important;
     left: 20px !important;
   }
-}
+} */
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
   .main-carousel {
     height: 300px;
   }
@@ -677,19 +687,25 @@
   }
 
   .action-buttons button {
-    padding: 6px 10px;
+    padding: 6px 60px;
     font-size: 0.7rem;
+    flex: 1;
+    /* border: 2px solid green; */
+    /* text-align: center; */
   }
 
   .btn-play svg,
   .btn-info svg {
     width: 14px;
     height: 14px;
+    /* border:  2px solid red; */
   }
 
   .btn-watchlist {
+    flex: 3;
     width: 36px;
     height: 36px;
+    border: 2px solid green;
   }
 
   .btn-watchlist svg {
