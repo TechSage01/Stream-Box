@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlay, FaBookmark, FaRegBookmark, FaSpinner } from "react-icons/fa";
+import { FiStar } from "react-icons/fi";
 
 const Moviedisplay = ({ movie }) => {
   const navigate = useNavigate();
+  const displayTitle = movie?.title || movie?.name || "Untitled";
   const [inWatchlist, setInWatchlist] = useState(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("watchlist")) || [];
@@ -69,14 +71,14 @@ const Moviedisplay = ({ movie }) => {
   };
 
   return (
-    <div 
+    <div
       onClick={handleCardClick}
       className="bg-white/5 backdrop-blur-md border border-white/10 rounded-md overflow-hidden shadow-lg hover:scale-[1.02] transition cursor-pointer group"
     >
       <div className="relative">
         <img
           src={imageUrl}
-          alt={movie.title}
+          alt={displayTitle}
           className="w-full h-[320px] object-cover"
         />
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
@@ -110,12 +112,22 @@ const Moviedisplay = ({ movie }) => {
 
       <div className="p-3 space-y-2">
         <p className="text-white font-semibold text-sm truncate group-hover:text-red-500 transition">
-          {movie.title}
+          {displayTitle}
         </p>
+         <div className="mt-1 flex justify-between text-xs text-gray-400">
+          <span>
+            {(movie.first_air_date || movie.release_date)?.split("-")[0] ||
+              "N/A"}
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <FiStar className="text-yellow-400" />
+            {Number(movie.vote_average || 0).toFixed(1)}
+          </span>
+        </div>
 
-        <button onClick={handleWatchClick} className="w-full text-sm bg-[#b00020] hover:bg-[#8f001a] text-white py-2 rounded-md transition">
+        {/* <button onClick={handleWatchClick} className="w-full text-sm bg-[#b00020] hover:bg-[#8f001a] text-white py-2 rounded-md transition">
           Watch now
-        </button>
+        </button> */}
       </div>
     </div>
   );

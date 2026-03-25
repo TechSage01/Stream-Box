@@ -18,7 +18,10 @@ import MoviesPage from './pages/movies.jsx';
 import MoviePage from './pages/movie.jsx';
 import Watchlist from './pages/watchlist.jsx';
 import MoviePlayer from './pages/MoviePage.jsx';
-
+import AnimationPage from './pages/Animation.jsx';
+import TvPage from './pages/tv.jsx';
+import NovelPage from './pages/Novel.jsx';
+// import AnimationPage from './pages/Animation.jsx
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -80,16 +83,19 @@ function AppContent() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path='/dashboard' element={<DashboardLayout />}>
           <Route path='' element={<Dashboard />} />
-          <Route path='settings' element={<Settings />} />
         </Route>
         <Route path='/search' element={<Search />} />
         <Route path='/trending' element={<Trending />} />
 <Route path='/movies' element={<MoviesPage />} />
         <Route path='/movie/:id' element={<MoviePage />} />
         <Route path='/play/:id' element={<MoviePlayer />} />
+        <Route path='/tv' element={<TvPage />} />
+        <Route path='/animation' element={<AnimationPage />} />
+        <Route path='/novel' element={<NovelPage />} />
         <Route path='/watchlist' element={<Watchlist />} />
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/contact-us' element={<ContactUs />} />
+        <Route path='/settings' element={<Settings />} />
         <Route path='/user-agreement' element={<UserAgreement />} />
       </Routes>
     </main>

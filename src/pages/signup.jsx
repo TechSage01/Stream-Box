@@ -29,6 +29,9 @@ const Signup = () => {
   const [strength, setStrength] = useState("");
 
   const navigate = useNavigate();
+  const verificationRedirectUrl =
+    import.meta.env.VITE_EMAIL_REDIRECT_URL ||
+    `${window.location.origin}/verify-email`;
 
   // ================= REGEX =================
   const usernameRegex = /^[a-zA-Z0-9_]{3,15}$/;
@@ -101,9 +104,13 @@ const Signup = () => {
         displayName: username,
       });
 
-      await sendEmailVerification(userCredential.user, {
-        url: "http://localhost:3002/signup",
+      const actionCodeSettings = {
+        url: verificationRedirectUrl,
         handleCodeInApp: true,
+      };
+
+      await sendEmailVerification(userCredential.user, {
+        ...actionCodeSettings,
       });
 
       navigate("/verify-email");

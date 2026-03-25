@@ -1,4 +1,4 @@
-  import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
   import { signOut, onAuthStateChanged } from "firebase/auth";
   import { auth } from "../firebase";
   import avatar from "../assets/avatar.jpg";
@@ -17,7 +17,10 @@ import {
     FiTrendingUp,
     FiMic,
     FiBookmark,
+    FiBookOpen, 
+    FiSettings
   } from "react-icons/fi";
+  import { MdAnimation } from "react-icons/md";
 
   const Dashboardheader = () => {
     const [username, setUsername] = useState("");
@@ -187,8 +190,11 @@ const menuItems = [
       { name: "Home", path: "/dashboard", icon: FiHome },
       { name: "Movies", path: "/movies", icon: FiFilm },
       { name: "TV Shows", path: "/tv", icon: FiTv },
+      { name: "Animation", path: "/animation", icon: MdAnimation },
+      { name: "Novel", path: "/novel", icon: FiBookOpen },
       { name: "Most Watched", path: "/trending", icon: FiTrendingUp },
       { name: "Watchlist", path: "/watchlist", icon: FiBookmark },
+      { name: "Settings", path: "/settings", icon: FiSettings },
     ];
 
     return (
@@ -239,7 +245,7 @@ const menuItems = [
               {/* SECOND ROW: Search input (centered) */}
               <div className="flex justify-center pb-4 px-4">
                 <div ref={suggestionsRef} className="w-full max-w-[400px] relative flex items-center">
-                  <div className="flex w-full min-w-0 bg-[#121212] rounded-md overflow-hidden border border-[#b00020]/50 focus-within:border-[#b00020] focus-within:shadow-[0_0_10px_rgba(176,0,32,0.55)] transition">
+                  <div className="flex w-full bg-[#1a1a1a] rounded-md overflow-hidden border border-transparent focus-within:border-red-700 transition">
                     <input
                       type="text"
                       placeholder="Search movies, TV shows..."
@@ -255,13 +261,13 @@ const menuItems = [
                       "
                     />
                     <button
-                      onClick={toMoviesPage}
+                      onClick={toMoviesPage} 
                       className="
                         bg-[#b00020] hover:bg-[#8f001a]
                         px-4 sm:px-5
                         flex items-center justify-center
                         transition
-                        active:scale-95
+                        active:scale-95 cursor-pointer
                       "
                     >
                       <FiSearch className="text-white" size={18} />
@@ -333,7 +339,7 @@ const menuItems = [
               {/* CENTER: Search input */}
               <div className="flex-1 flex justify-center">
                 <div ref={suggestionsRef} className="w-full max-w-[400px] relative flex items-center">
-                  <div className="flex w-full bg-[#1a1a1a] rounded-md overflow-hidden">
+                  <div className="flex w-full bg-[#1a1a1a] rounded-md overflow-hidden border border-transparent focus-within:border-red-600 transition duration-300">
                     <input
                       type="text"
                       placeholder="Search movies, TV shows..."
@@ -343,7 +349,7 @@ const menuItems = [
                       className="
                         w-full bg-transparent text-white placeholder-gray-400
                         px-5 py-2 text-sm
-                        focus:outline-none focus:ring-1 focus:ring-red-700
+                        focus:outline-none
                       "
                     />
                     <button

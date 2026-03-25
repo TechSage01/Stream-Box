@@ -62,8 +62,18 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/tv-shows" className="hover:text-white transition">
+                <a href="/tv" className="hover:text-white transition">
                   TV Shows
+                </a>
+              </li>
+              <li>
+                <a href="/animation" className="hover:text-white transition">
+                  Animation
+                </a>
+              </li>
+              <li>
+                <a href="/trending" className="hover:text-white transition">
+                  Most Watched
                 </a>
               </li>
               <li>

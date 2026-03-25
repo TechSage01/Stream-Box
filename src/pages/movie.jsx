@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import Dashboardheader from "../components/dashboard-header.jsx";
 import Moviedisplay from "../components/Moviedisplay.jsx";
 import { FaPlay, FaInfoCircle, FaPlus, FaStar, FaClock, FaCalendarAlt,  FaArrowLeft, FaRegBookmark, FaSpinner} from "react-icons/fa";
@@ -8,6 +8,9 @@ import { MdClose } from "react-icons/md";
 const MoviePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawType = searchParams.get("type"); // movie | tv | animation
+  const mediaType = rawType === "tv" || rawType === "animation" ? "tv" : "movie";
   const [movie, setMovie] = useState(null);
   const [credits, setCredits] = useState(null);
   const [similarMovies, setSimilarMovies] = useState([]);
@@ -18,41 +21,38 @@ const MoviePage = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       setLoading(true);
-      const API_KEY = import.meta.env.VITE_API_KEY;
+      const API_KEY =
+        import.meta.env.VITE_TMDB_API_KEY || import.meta.env.VITE_API_KEY;
 
       try {
-        // Fetch movie details
         const movieRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+          `https://api.themoviedb.org/3/${mediaType}/${id}?api_key=${API_KEY}`
         );
         const movieData = await movieRes.json();
         setMovie(movieData);
 
-        // Fetch credits (cast & crew)
         const creditsRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${API_KEY}`
+          `https://api.themoviedb.org/3/${mediaType}/${id}/credits?api_key=${API_KEY}`
         );
         const creditsData = await creditsRes.json();
         setCredits(creditsData);
 
-        // Fetch similar movies
         const similarRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${API_KEY}`
+          `https://api.themoviedb.org/3/${mediaType}/${id}/similar?api_key=${API_KEY}`
         );
         const similarData = await similarRes.json();
         setSimilarMovies(similarData.results?.slice(0, 6) || []);
 
-        // Fetch trailer
         const videosRes = await fetch(
-          `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${API_KEY}`
+          `https://api.themoviedb.org/3/${mediaType}/${id}/videos?api_key=${API_KEY}`
         );
         const videosData = await videosRes.json();
-        const trailer = videosData.results?.find(v => v.type === "Trailer" && v.site === "YouTube");
-        if (trailer) {
-          setTrailerKey(trailer.key);
-        }
+        const trailer = videosData.results?.find(
+          (v) => v.type === "Trailer" && v.site === "YouTube"
+        );
+        if (trailer) setTrailerKey(trailer.key);
       } catch (error) {
-        console.error("Error fetching movie details:", error);
+        console.error("Error fetching details:", error);
       } finally {
         setLoading(false);
       }
@@ -60,7 +60,7 @@ const MoviePage = () => {
 
     fetchMovieDetails();
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, mediaType]);
 
   const formatRuntime = (minutes) => {
     if (!minutes) return "N/A";
@@ -75,7 +75,8 @@ const MoviePage = () => {
   };
 
   const handleSimilarClick = (movieId) => {
-    navigate(`/movie/${movieId}`);
+    const nextType = rawType === "animation" ? "animation" : mediaType;
+    navigate(`/movie/${movieId}?type=${nextType}`);
     window.scrollTo(0, 0);
   };
 
@@ -146,6 +147,11 @@ const handleWatchlistClick = (movie) => {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/300x450?text=No+Image";
 
+  const displayTitle = movie?.title || movie?.name || "Untitled";
+  const displayDate = movie?.release_date || movie?.first_air_date;
+  const displayRuntime =
+    mediaType === "tv" ? movie?.episode_run_time?.[0] : movie?.runtime;
+
   return (
     <>
       <Dashboardheader />
@@ -181,21 +187,21 @@ const handleWatchlistClick = (movie) => {
           <div className="flex-1 text-center md:text-left">
             {/* TITLE */}
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              {movie.title}
+              {displayTitle}
             </h1>
 
             {/* META INFO */}
             <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-4">
-              {movie.release_date && (
+              {displayDate && (
                 <span className="meta-item flex items-center gap-2">
                   <FaCalendarAlt size={12} />
-                  {getYear(movie.release_date)}
+                  {getYear(displayDate)}
                 </span>
               )}
-              {movie.runtime && (
+              {displayRuntime && (
                 <span className="meta-item flex items-center gap-2">
                   <FaClock size={12} />
-                  {formatRuntime(movie.runtime)}
+                  {formatRuntime(displayRuntime)}
                 </span>
               )}
               {movie.vote_average > 0 && (
@@ -221,7 +227,7 @@ const handleWatchlistClick = (movie) => {
             )}
 
             {/* TAGLINE */}
-{movie.tagline && (
+            {movie.tagline && (
               <p className="tagline text-xl md:text-2xl text-white/95 font-light italic bg-black/50 backdrop-blur-sm rounded-xl p-6 mb-8 mx-4 shadow-2xl animate-fade-in border border-white/20 max-w-2xl mx-auto">"{movie.tagline}"</p>
             )}
 
@@ -233,7 +239,7 @@ const handleWatchlistClick = (movie) => {
             {/* ACTION BUTTONS */}
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <button
-                onClick={()=> navigate(`/play/${movie.id}`)}
+                onClick={()=> navigate(`/play/${movie.id}?type=${rawType || 'movie'}`)}
                 className="btn-play flex items-center gap-3 px-8 py-3"
               >
                 <FaPlay size={18} />
