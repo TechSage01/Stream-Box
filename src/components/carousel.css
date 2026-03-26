@@ -139,9 +139,6 @@
 
 .content-text {
   flex: 1;
-  /* margin-top: 200px; */
-    /* border: 2px solid green; */
-    /* max-width: 800px; */
   animation: slideInLeft 0.8s ease-out;
 }
 

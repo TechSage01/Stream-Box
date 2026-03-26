@@ -7,7 +7,7 @@ import {
   updateProfile,
   sendEmailVerification,
   GoogleAuthProvider,
-  FacebookAuthProvider,
+  GithubAuthProvider,
   TwitterAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
@@ -41,7 +41,7 @@ const Signup = () => {
 
   // Providers
   const googleProvider = new GoogleAuthProvider();
-  const facebookProvider = new FacebookAuthProvider();
+  const githubProvider = new GithubAuthProvider();
   const twitterProvider = new TwitterAuthProvider();
 
   // Password Strength Check
@@ -124,7 +124,16 @@ const Signup = () => {
   const handleSocialLogin = async (provider) => {
     try {
       setLoading(true);
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Optional: you can get GitHub access token
+      if (provider instanceof GithubAuthProvider) {
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        console.log("GitHub Token:", token);
+      }
+
       navigate("/dashboard");
     } catch (err) {
       setError(err.message);
@@ -402,10 +411,10 @@ const Signup = () => {
 
             <button
               type="button"
-              onClick={() => handleSocialLogin(facebookProvider)}
+              onClick={() => handleSocialLogin(githubProvider)}
               style={socialBtnStyle}
             >
-              <img src={github} alt="Facebook" width="22" />
+              <img src={github} alt="Github" width="22" />
             </button>
 
             <button

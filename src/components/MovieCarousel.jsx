@@ -1179,7 +1179,7 @@ const MovieCarousel = ({ movies = [] }) => {
   ];
 
   const handleSlideChange = (swiper) => {
-    setActiveMovie(moviesToShow[swiper.activeIndex]);
+    setActiveMovie(caroussselMovies[swiper.activeIndex] || {});
   };
 
   const handleSlideClick = () => {
@@ -1197,7 +1197,8 @@ const MovieCarousel = ({ movies = [] }) => {
   };
 
   const handleNollywoodClick = (movie) => {
-    navigate(`/movie/${movie.id}`);
+    setActiveMovie(movie);
+    setShowTrailer(true);
   };
 
   const handlePopularClick = (movie) => {
@@ -1256,7 +1257,7 @@ const MovieCarousel = ({ movies = [] }) => {
           <SwiperSlide key={movie.id}>
             <div
               className="carousel-slide"
-              // onClick={()=> navigate(`/movie/${movie.id}`)}
+              onClick={()=> navigate(`/movie/${movie.id}`)}
               style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.poster_path})` }}
             >
               <div className="carousel-overlay"></div>
@@ -1377,7 +1378,7 @@ const MovieCarousel = ({ movies = [] }) => {
       <div className="thumbnails-container">
         <div className="section-header">
           <h2 className="section-title">Popular series</h2>
-          <a href="/search?category=nollywood" className="see-more-link">
+          <a href="/search?category=popular" className="see-more-link">
             More
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -1545,7 +1546,7 @@ const MovieCarousel = ({ movies = [] }) => {
       <div className="popular-container">
         <div className="popular-header">
           <h2 className="popular-section-title">Popular Movies</h2>
-          <a href="/search?category=nollywood" className="see-more-link">
+          <a href="/search?category=popular" className="see-more-link">
             More
             <svg
               xmlns="http://www.w3.org/2000/svg"

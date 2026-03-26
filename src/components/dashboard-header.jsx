@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-  import { signOut, onAuthStateChanged } from "firebase/auth";
+  import { signOut, onAuthStateChanged, updateProfile } from "firebase/auth";
   import { auth } from "../firebase";
   import avatar from "../assets/avatar.jpg";
   import streambox from "../assets/streambox.png";
@@ -16,6 +16,7 @@ import {
     FiTv,
     FiTrendingUp,
     FiMic,
+  FiCamera,
     FiBookmark,
     FiBookOpen, 
     FiSettings
@@ -32,6 +33,7 @@ import {
     const [logoutLoading, setLogoutLoading] = useState(false);
     const [hoverProfile, setHoverProfile] = useState(false);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [profileImage, setProfileImage] = useState(avatar);
   const [searchLoading, setSearchLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -47,7 +49,13 @@ import {
     /* AUTH USER */
     useEffect(() => {
       const unsub = onAuthStateChanged(auth, (user) => {
-        if (user) setUsername(user.displayName || "User");
+        if (user) {
+          setUsername(user.displayName || "User");
+          const savedProfileImage = localStorage.getItem("profileImage");
+          setProfileImage(savedProfileImage || user.photoURL || avatar);
+        } else {
+          setProfileImage(avatar);
+        }
       });
       return () => unsub();
     }, []);
@@ -177,11 +185,29 @@ import {
       }
     };
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
       const file = e.target.files[0];
       if (file) {
-        console.log("Selected image:", file);
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const imageUrl = reader.result;
+          setProfileImage(imageUrl);
+          localStorage.setItem("profileImage", imageUrl);
+
+          // Keep Firebase auth profile in sync when user is logged in.
+          if (auth.currentUser) {
+            try {
+              await updateProfile(auth.currentUser, { photoURL: imageUrl });
+            } catch (error) {
+              console.error("Failed to update Firebase profile image:", error);
+            }
+          }
+        };
+        reader.readAsDataURL(file);
       }
+
+      // Allow selecting the same file again by resetting input value.
+      e.target.value = "";
     };
 
     const location = useLocation();
@@ -228,15 +254,20 @@ const menuItems = [
                   onMouseLeave={() => setHoverProfile(false)}
                 >
                   <img
-                    src={avatar}
+                    src={profileImage}
                     alt="Profile"
                     className="h-10 w-10 rounded-full border-2 border-red-700 hover:border-red-600 cursor-pointer"
                     onClick={() => setShowProfileModal(true)}
+                    title="Change profile picture"
+                    aria-label="Change profile picture"
                     ref={profileRef}
                   />
+                  <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-700 text-white ring-2 ring-black">
+                    <FiCamera size={10} />
+                  </span>
                   {hoverProfile && (
                     <div className="absolute right-0 mt-2 w-max bg-black text-white px-3 py-1 rounded-md shadow-lg text-sm whitespace-nowrap">
-                      Hi, {username}
+                      Hi, {username} - tap to change photo
                     </div>
                   )}
                 </div>
@@ -413,15 +444,20 @@ const menuItems = [
                 onMouseLeave={() => setHoverProfile(false)}
               >
                 <img
-                  src={avatar}
+                  src={profileImage}
                   alt="Profile"
                   className="h-12 w-12 rounded-full border-2 border-red-700 hover:border-red-600 cursor-pointer"
                   onClick={() => setShowProfileModal(true)}
+                  title="Change profile picture"
+                  aria-label="Change profile picture"
                   ref={profileRef}
                 />
+                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-700 text-white ring-2 ring-black">
+                  <FiCamera size={10} />
+                </span>
                 {hoverProfile && (
                   <div className="absolute right-0 mt-2 w-max bg-black text-white px-3 py-1 rounded-md shadow-lg text-sm whitespace-nowrap">
-                    Hi, {username}
+                    Hi, {username} - tap to change photo
                   </div>
                 )}
               </div>

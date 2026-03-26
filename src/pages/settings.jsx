@@ -237,6 +237,7 @@ const Settings = () => {
   const PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
 
   const [showDevicesModal, setShowDevicesModal] = useState(false);
+  const [showLogoutAllModal, setShowLogoutAllModal] = useState(false);
   const [devices, setDevices] = useState([]);
   const [securityLoading, setSecurityLoading] = useState(false);
 
@@ -311,6 +312,7 @@ const Settings = () => {
 
   const handleSignOutAllDevices = async () => {
     if (!auth.currentUser) return;
+    setShowLogoutAllModal(false);
     setSecurityLoading(true);
     try {
       // Client-only fallback: clears local tracked sessions and signs out current device.
@@ -811,7 +813,7 @@ const Settings = () => {
 
                 <div className="pt-8 mt-8 border-t border-gray-800">
                   <button
-                    onClick={handleSignOutAllDevices}
+                    onClick={() => setShowLogoutAllModal(true)}
                     disabled={securityLoading}
                     className="flex items-center justify-center gap-3 px-6 py-4 bg-red-900/20 text-red-500 border border-red-900/50 hover:bg-red-600 hover:text-white hover:border-red-600 rounded-xl font-bold transition-all shadow-sm w-full md:w-auto text-lg disabled:opacity-60"
                   >
@@ -903,6 +905,37 @@ const Settings = () => {
                     )}
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showLogoutAllModal && (
+          <div className="fixed inset-0 bg-black/60 z-[1000] flex items-center justify-center px-4">
+            <div className="bg-white p-6 rounded-xl text-center max-w-sm w-full shadow-xl">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Confirm Logout?
+              </h3>
+
+              <p className="text-sm text-gray-600 mt-2">
+                Are you sure you want to logout of all devices?
+              </p>
+
+              <div className="mt-5 flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowLogoutAllModal(false)}
+                  className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md font-semibold"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleSignOutAllDevices}
+                  disabled={securityLoading}
+                  className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-md font-semibold disabled:opacity-50"
+                >
+                  {securityLoading ? "Signing out..." : "Yes, Logout"}
+                </button>
               </div>
             </div>
           </div>
